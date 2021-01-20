@@ -130,13 +130,14 @@ class DatetimeField(BaseField):
   # 값 설정
   def setValue(self, value, format=None, validate=True):
     self.__value = None
-
-    # 유효성검사: 문자열 포맷 확인
-    if isinstance(value, str):
-      value = datetime.strptime(value, format or self.__format)
-
+      
     if validate:
-      # 유효성검사
+      __format = format or self.__format
+      
+      # 유효성검사: 문자열 포맷 확인
+      if isinstance(value, str):
+        value = datetime.strptime(value, __format)
+        
       self.validate(value)
     
     self.__value = value
