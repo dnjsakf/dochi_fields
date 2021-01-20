@@ -1,4 +1,6 @@
 # models.py
+from typing import Optional, Union, Callable, Iterable, Any, Dict, Tuple, List
+
 from uuid import uuid4
 from datetime import datetime
 
@@ -6,13 +8,15 @@ from fields import BaseField, StringField, IntegerField, DatetimeField
 from errors import ValidateError
 
 class BaseModel(object):
-  def __init__(self, data=None, many=False):
-    self.__many = many
-    
+
+  def __init__(self, data:Union[List,Dict]=None):
     if data is not None:
-      self.dump(data)
+      if isinstance(data, List):
+        self.dumps(data) # 다중 저장
+      elif isinstance(data, Dict):
+        self.dump(data) # 단일 저장
   
-  def getField(self, field_name, field_type=None):
+  def getField(self, field_name:str, field_type=None) -> Any:
     '''
     특정 필드 조회
     * BaseField 타입의 필드를 조회하기위한 함수
@@ -27,7 +31,7 @@ class BaseModel(object):
       raise TypeError("Expected data type '%s', but '%s'." %( field_type.__name__, attr.__class__.__name__ ))
     raise ValueError("'%s' is not defined field." % ( field_name ))
 
-  def getFields(self):
+  def getFields(self) -> List:
     '''
     필드 목록 조회
     * BaseField 타입의 필드 목록을 조회하기위한 함수
@@ -42,7 +46,7 @@ class BaseModel(object):
         pass
     return fields
   
-  def __mapp(self, datas, validate=True):
+  def __mapp(self, datas:Dict, validate=True) -> Tuple[Dict,Dict]:
     '''
     데이터 매핑
     * 각 필드에 데이터를 매핑하는 함수
@@ -50,7 +54,7 @@ class BaseModel(object):
     '''
     data = dict()
     errors = dict()
-    
+
     # 입력값 매핑
     for field_name, value in datas.items():
       try:
@@ -87,7 +91,7 @@ class BaseModel(object):
     # 값매핑 결과 반환
     return ( data, errors )
   
-  def dump(self, data=None):
+  def dump(self, data:Dict=None) -> Dict:
     '''
     단일 데이터 Dumping
     * 입력받은 데이터를 각 필드에 매핑
@@ -102,7 +106,7 @@ class BaseModel(object):
     
     return dumped
 
-  def load(self, data=None):
+  def load(self, data:Dict=None) -> Dict:
     '''
     단일 데이터 Loading
     * 입력받은 데이터를 각 필드에 매핑
@@ -121,13 +125,14 @@ class BaseModel(object):
       raise ValidateError(errors)
       
     return loaded
-    
-  def dumps(self, datas):
+
+  def dumps(self, data:List=None) -> List:
+    klass = self.__class__
+    print( klass )
+
+  def loads(self, data) -> List:
     pass
-    
-  def loads(self, datas):
-    pass
-    
+
   def __str__(self):
     return str(self.__data)
     

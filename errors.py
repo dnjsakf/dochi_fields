@@ -1,3 +1,4 @@
+# errors.py
 
 class ValidateError(Exception):
   def __init__(self, messages, code=400):

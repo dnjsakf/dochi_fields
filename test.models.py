@@ -26,14 +26,13 @@ class TestUserModel(object):
     데이터 매핑 방법
     '''
     user = UserModel(dict(
-      name="Dumpping_2",
+      name="Dumpping_1",
       age=10,
       hire_date="20210120"
     ))
-    
     data = user.dump(dict(
       id="admin",
-      name="Dumpping_1",
+      name="Dumpping_2",
       age=100,
       hire_date="20210120"
     ))
@@ -81,6 +80,28 @@ class TestUserModel(object):
     
     except ValidateError as e:
       pprint( e.getMessages(), indent=2 )
+      
+  def test_case_4(self):
+    '''
+    데이터 다중 Dumping 정상
+    '''
+    user = UserModel()
+
+    datas = [
+      dict(
+        name="Dochi 1",
+        age=11
+      ),
+      dict(
+        name="Dochi 2",
+        age=10
+      )
+    ]
+
+    print("==== Dumps Result")
+    dump_data = user.dumps(datas)
+    pprint( dump_data, indent=2 )
+    
 
 # 테스트실행
 TestUserModel()
